@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  app:
+    image: maven:3-jdk-8
+    environment:
+      - SERVER_PORT
+      - ML_SERVICE_PORT
+      - ML_SERVICE_HOST
+      - NUM_PREDICTIONS
+      - NUM_THREADS
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/app:delegated
+      - ~/.m2:/root/.m2:delegated
+    working_dir: "/app"
+    command: ["sh", "redeploy.sh"]
+  nginx:
+    image: nginx:1.12.2
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    volumes:
+      - ./proxy/conf.d:/etc/nginx/conf.d:ro
+  ml-service:
+    image: devallday/teacheck-ml-service:1.3
+    ports:
+      - "8000:8000"
