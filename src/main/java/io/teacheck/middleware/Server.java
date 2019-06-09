@@ -60,7 +60,7 @@ public class Server extends AbstractVerticle {
 
     private void predict(RoutingContext ctx) {
         setupCompletionService();
-        JsonArray jsonArray = ctx.getBodyAsJsonArray();
+        JsonArray jsonArray = ctx.getBodyAsJson().getJsonArray("data");
         for (int i = 0; i < Constants.NUM_PREDICTIONS; i++) {
             JsonObject data = jsonArray.getJsonObject(i);
             vertx.executeBlocking(future -> {
